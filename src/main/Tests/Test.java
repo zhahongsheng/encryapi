@@ -1,9 +1,5 @@
-import com.alibaba.fastjson.JSONObject;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-import java.io.IOException;
+import java.util.Stack;
 
 /**
  * @author zhahsh
@@ -11,30 +7,38 @@ import java.io.IOException;
  */
 public class Test {
 
-
-
-    public Test() throws IOException {
-
+    public static void main(String[] args) {
+        System.out.println(isValid("(){}}{"));
 
     }
 
-    public static void main(String[] args) {
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        Request request = new Request.Builder()
-                .url("http://192.168.12.21:5050/console/console/login/getPublicKey")
-                .method("GET", null)
-                .build();
-        try {
-            Response response = client.newCall(request).execute();
-            assert response.body() != null;
-            String stringTemp = response.body().string();
-            JSONObject jsonObjectTemp = new JSONObject();
-            jsonObjectTemp = (JSONObject)JSONObject.parse(stringTemp);
-            System.out.println(jsonObjectTemp);
-        }catch (Exception e){
-            System.out.println(e.toString());
+    public static boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 1; i < s.length(); i++) {
+            if (stack.isEmpty()){
+                stack.push(s.charAt(i));
+                continue;
+            }
+            switch (s.charAt(i)){
+                case ')':
+                    if (stack.peek() == '('){
+                        stack.pop();
+                        break;
+                    }
+                case '}':
+                    if (stack.peek() == '{'){
+                        stack.pop();
+                        break;
+                    }
+                case ']':
+                    if (stack.peek() == '['){
+                        stack.pop();
+                        break;
+                    }
+                default:
+                    stack.push(s.charAt(i));
+            }
         }
-
+        return stack.empty();
     }
 }
